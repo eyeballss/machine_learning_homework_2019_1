@@ -1,15 +1,4 @@
 
-
-```python
-!rm winequality-red.csv
-!rm winequality-white.csv
-```
-
-    rm: winequality-red.csv: No such file or directory
-    rm: winequality-white.csv: No such file or directory
-
-
-
 ```python
 !curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
 !curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv
@@ -499,5 +488,67 @@ print(mean_squared_error(lm.predict(X_test),Y_test))
 
 
 ```python
+# 이번엔 white wine 데이터를 사용해본다.
+# wine 데이터를 넣을 list
+data = []
 
+# white wine 데이터를 읽어옴
+f = open('winequality-white.csv', 'r', encoding='utf-8')
+rdr = csv.reader(f)
+index = 0;
+for line in rdr:
+    data.append(line)
+    index=index+1;
+f.close()
+
+features = []
+targets = []
+
+for i in range(1,len(data)):
+    features.append(data[i][0].split(";")[:-1])
+    targets.append(data[i][0].split(";")[-1:])
+    
+features = numpy.asarray(features, dtype=numpy.float32)
+targets = numpy.asarray(targets, dtype=numpy.float32)
+
+print(features)
+print(targets)
 ```
+
+    [[ 7.    0.27  0.36 ...  3.    0.45  8.8 ]
+     [ 6.3   0.3   0.34 ...  3.3   0.49  9.5 ]
+     [ 8.1   0.28  0.4  ...  3.26  0.44 10.1 ]
+     ...
+     [ 6.5   0.24  0.19 ...  2.99  0.46  9.4 ]
+     [ 5.5   0.29  0.3  ...  3.34  0.38 12.8 ]
+     [ 6.    0.21  0.38 ...  3.26  0.32 11.8 ]]
+    [[6.]
+     [6.]
+     [6.]
+     ...
+     [6.]
+     [7.]
+     [6.]]
+
+
+
+```python
+X_train, X_test, Y_train, Y_test = train_test_split(features, targets, test_size=0.3, random_state=2)
+lm.fit(X_train, Y_train)
+```
+
+
+
+
+    LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None,
+             normalize=False)
+
+
+
+
+```python
+print(mean_squared_error(lm.predict(X_test),Y_test))
+```
+
+    0.5852348
+
